@@ -5,5 +5,3 @@ songs:
  
 voice:
     directory: "voice"
-    introTag: "intro"
-    outroTag: "outro"

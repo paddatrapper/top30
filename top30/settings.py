@@ -19,8 +19,6 @@ class settings:
         self.songs['directory'] = conf['songs']['directory']
 
         self.voice['directory'] = conf['voice']['directory']
-        self.voice['introTag'] = conf['voice']['introTag']
-        self.voice['outroTag'] = conf['voice']['outroTag']
 
     def getSongConf(self, key):
         return self.songs[key]
