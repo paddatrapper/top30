@@ -22,7 +22,7 @@ class top30Creator:
     def createRundown(self, start, end, directory):
         print("Creating rundown ", directory, start, "-", end, sep="") 
         voice_beginning_overlap = 500
-        voice_end_overlap = 1200
+        voice_end_overlap = 1300
         song_length = int(self.config.getSongConf('length')) * 1000
 
         song_dir = self.config.getSongConf('directory')
