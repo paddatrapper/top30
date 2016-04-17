@@ -1,6 +1,6 @@
 songs:
     length: 10
-    startTag: "top-30-start"
+    startTag: "DESCRIPTION"
     directory: "songs"
  
 voice:
