@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.20.0 -->
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkFileFilter" id="fftr_audio">
+    <mime-types>
+      <mime-type>audio/ogg</mime-type>
+      <mime-type>audio/mp3</mime-type>
+    </mime-types>
+  </object>
+  <object class="GtkFileFilter" id="fftr_mp3">
+    <mime-types>
+      <mime-type>audio/mp3</mime-type>
+    </mime-types>
+  </object>
+  <object class="GtkListStore" id="list_clips">
+    <columns>
+      <!-- column-name Position -->
+      <column type="gint"/>
+      <!-- column-name Song -->
+      <column type="gboolean"/>
+      <!-- column-name Name -->
+      <column type="gchararray"/>
+      <!-- column-name Artist -->
+      <column type="gchararray"/>
+      <!-- column-name Start -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkWindow" id="mainWindow">
+    <property name="can_focus">False</property>
+    <signal name="delete-event" handler="onDeleteWindow" swapped="no"/>
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="row_spacing">2</property>
+        <property name="column_spacing">2</property>
+        <child>
+          <object class="GtkProgressBar" id="prgs_create">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">3</property>
+            <property name="width">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkGrid">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="row_homogeneous">True</property>
+            <property name="column_homogeneous">True</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Clip length:</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Voice intro:</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Voice outro:</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="txt_voice_outro">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="caps_lock_warning">False</property>
+                <property name="input_purpose">number</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="txt_voice_intro">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="caps_lock_warning">False</property>
+                <property name="input_purpose">number</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="txt_clip_length">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="caps_lock_warning">False</property>
+                <property name="input_purpose">number</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="top_attach">0</property>
+            <property name="height">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTextView" id="txt_status">
+            <property name="height_request">100</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="editable">False</property>
+            <property name="left_margin">1</property>
+            <property name="right_margin">1</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="top_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_create">
+            <property name="label" translatable="yes">Create Clip</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="top_attach">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTreeView" id="view_clip_list">
+            <property name="width_request">350</property>
+            <property name="height_request">200</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="model">list_clips</property>
+            <child internal-child="selection">
+              <object class="GtkTreeSelection"/>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+            <property name="width">3</property>
+            <property name="height">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_add_clip">
+            <property name="label" translatable="yes">Add Clip</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="onAddClipClicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="top_attach">3</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
