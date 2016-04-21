@@ -6,7 +6,7 @@ from pydub import AudioSegment
 class Top30Creator:
     def __init__(self, config_file):
         self.config = Settings(config_file)
-        self.voice_beginning_overlap = int(self.config.get_voice_conf('beginOverlap'))
+        self.voice_begin_overlap = int(self.config.get_voice_conf('beginOverlap'))
         self.voice_end_overlap = int(self.config.get_voice_conf('endOverlap'))
         self.song_length = int(self.config.get_song_conf('length')) * 1000
         
@@ -38,14 +38,13 @@ class Top30Creator:
 
     def add_voice(self, voice_file, rundown):
         voice = AudioSegment.from_ogg(voice_file)
-        rundown = rundown.overlay(voice[:self.voice_beginning_overlap], 
-                position=-self.voice_beginning_overlap)
-        return rundown.append(voice[self.voice_beginning_overlap:-self.voice_end_overlap], 
+        rundown = rundown.overlay(voice[:self.voice_begin_overlap], 
+                position=-self.voice_begin_overlap)
+        return rundown.append(voice[self.voice_begin_overlap:-self.voice_end_overlap], 
                 crossfade=0)
 
     def add_song(self, song_file, rundown):
-        song_meta = OggVorbis(song_file)
-        start_time = self.get_start_time(song_meta.pprint())
+        start_time = self.get_start_time(song_file)
 
         song = AudioSegment.from_ogg(song_file)
         song = song.overlay(rundown[-self.voice_end_overlap:])
@@ -62,13 +61,32 @@ class Top30Creator:
         else:
             rundown.export(filename + "." + file_type, format=file_type)
 
-    def get_start_time(self, song_meta):
+    def get_start_time(self, filename):
+        song_meta = OggVorbis(filename).pprint()
         tag = self.config.get_song_conf('startTag') 
         time_code_start = song_meta.find(tag + "=") + len(tag) + 1
         time_code = song_meta[time_code_start:]
         song_length = float(time_code.split(':')[0]) * 60 + float(time_code.split(':')[1])
         song_length *= 1000
         return song_length
+
+    def get_song_length(self):
+        return self.song_length
+
+    def get_voice_begin_overlap(self):
+        return self.voice_begin_overlap
+
+    def get_voice_end_overlap(self):
+        return self.voice_end_overlap
+
+    def set_song_length(self, song_length):
+        self.song_length = song_length
+
+    def set_voice_begin_overlap(self, voice_begin_overlap):
+        self.voice_begin_overlap = voice_begin_overlap
+
+    def set_voice_end_overlap(self, voice_end_overlap):
+        self.voice_end_overlap = voice_end_overlap
 
     def run(self):
         self.create_rundown(30, 21, "")
