@@ -1,7 +1,0 @@
-songs:
-    length: 10
-    startTag: "DESCRIPTION"
-    directory: "songs"
- 
-voice:
-    directory: "voice"

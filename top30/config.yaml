@@ -1,0 +1,9 @@
+songs:
+    length: 10
+    startTag: "DESCRIPTION"
+    directory: "../songs"
+ 
+voice:
+    beginningOverlap: 500
+    endOverlap: 1400
+    directory: "../voice"

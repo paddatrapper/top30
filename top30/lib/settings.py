@@ -1,7 +1,7 @@
 import yaml
 import os.path
 
-class settings:
+class Settings:
     songs = {}
     voice = {}
     def __init__(self, conf_file):
@@ -18,12 +18,14 @@ class settings:
         self.songs['startTag'] = conf['songs']['startTag']
         self.songs['directory'] = conf['songs']['directory']
 
+        self.voice['beginOverlap'] = conf['voice']['beginningOverlap']
+        self.voice['endOverlap'] = conf['voice']['endOverlap']
         self.voice['directory'] = conf['voice']['directory']
 
-    def getSongConf(self, key):
+    def get_song_conf(self, key):
         return self.songs[key]
 
-    def getVoiceConf(self, key):
+    def get_voice_conf(self, key):
         return self.voice[key]
 
 class ConfigurationError(Exception):
