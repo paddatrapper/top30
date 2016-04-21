@@ -5,9 +5,6 @@ class Settings:
     songs = {}
     voice = {}
     def __init__(self, conf_file):
-        """
-        Parses the configuration yaml file into a set of useable settings.
-        """
         if conf_file == "":
             raise ConfigurationError("No configuration file provided")
 
