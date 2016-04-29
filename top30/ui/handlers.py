@@ -62,7 +62,6 @@ class MainWindowHandler:
                 rundown = self.creator.add_voice(clip, rundown)
             it = self.clip_list.iter_next(it)
             i += 1
-        rundown_name = "rundown-%s%02d-%02d" % ("", 20, 18)
         self.creator.export(rundown_name, "mp3", rundown)
         self.builder.get_object("bff_status").set_text("Complete", len("Complete"))
 
