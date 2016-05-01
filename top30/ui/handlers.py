@@ -36,10 +36,31 @@ class MainWindowHandler:
                 (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                 Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         self.add_filters(dialog)
+        dialog.set_select_multiple(True)
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
-            self.add_clip(dialog.get_filename())
+            for f in dialog.get_filenames():
+                self.add_clip(f)
         dialog.destroy()
+
+    def onMoveClipUpClicked(self, widget):
+        item = self.get_selected_clip()
+        if not item == None:
+            previous = self.clip_list.iter_previous(item)
+            if not previous == None:
+                self.clip_list.move_before(item, previous)
+
+    def onMoveClipDownClicked(self, widget):
+        item = self.get_selected_clip()
+        if not item == None:
+            next_item = self.clip_list.iter_next(item)
+            if not next_item == None:
+                self.clip_list.move_after(item, next_item)
+
+    def onDeleteClipClicked(self, widget):
+        item = self.get_selected_clip()
+        if not item == None:
+            self.clip_list.remove(item)
 
     def onCreateClipClicked(self, widget):
         self.save_settings()
@@ -54,11 +75,11 @@ class MainWindowHandler:
             clip = self.clip_list[it][1]
             if i == 1:
                 rundown = self.creator.get_start(clip)
-            elif self.last_clip == it:
+            elif i == len(self.clip_list) - 1:
                 rundown = self.creator.add_end(clip, rundown)
-            elif i % 2 == 0:
+            elif self.clip_list[it][0]:
                 rundown = self.creator.add_song(clip, rundown)
-            elif i % 2 == 1:
+            else:
                 rundown = self.creator.add_voice(clip, rundown)
             it = self.clip_list.iter_next(it)
             i += 1
@@ -77,11 +98,17 @@ class MainWindowHandler:
         fftr_all.add_pattern("*")
         dialog.add_filter(fftr_all)
 
+    def get_selected_clip(self):
+        clip_list_view = self.builder.get_object("view_clip_list")
+        model, item = clip_list_view.get_selection().get_selected()
+        return item
+
+
     def add_clip(self, filename):
         try:
             time = self.creator.get_start_time(filename)/1000
             time_string = "%02d:%02.1f" % (time / 60, time % 60)
-            self.last_clip = self.clip_list.append([True, filename, time_string])
+            self.clip_list.append([True, filename, time_string])
         except:
             self.clip_list.append([False, filename, None])
     

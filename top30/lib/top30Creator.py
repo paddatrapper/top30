@@ -6,13 +6,13 @@ from pydub import AudioSegment
 class Top30Creator:
     def __init__(self, config_file):
         self.config = Settings(config_file)
-        self.voice_begin_overlap = int(self.config.get_voice_conf('beginOverlap'))
-        self.voice_end_overlap = int(self.config.get_voice_conf('endOverlap'))
-        self.song_length = int(self.config.get_song_conf('length')) * 1000
+        self.voice_begin_overlap = self.config.VOICE_START_OVERLAP
+        self.voice_end_overlap = self.config.VOICE_END_OVERLAP
+        self.song_length = self.config.SONG_LENGTH
         
     def create_rundown(self, start, end, directory):
-        song_dir = self.config.get_song_conf('directory')
-        voice_dir = self.config.get_voice_conf('directory')
+        song_dir = self.config.SONG_DIRECTORY
+        voice_dir = self.config.VOICE_DIRECTORY
         if directory:
             song_dir += "/" + directory
             directory += "_"
@@ -62,7 +62,7 @@ class Top30Creator:
 
     def get_start_time(self, filename):
         song_meta = OggVorbis(filename).pprint().lower()
-        tag = self.config.get_song_conf('startTag').lower() 
+        tag = self.config.SONG_START_TAG.lower() 
         time_code_start = song_meta.find(tag + "=") + len(tag) + 1
         time_code = song_meta[time_code_start:]
         song_length = float(time_code.split(':')[0]) * 60 + float(time_code.split(':')[1])
