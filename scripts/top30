@@ -1,0 +1,4 @@
+#!/bin/python3.5
+from top30 import run
+
+run.main()

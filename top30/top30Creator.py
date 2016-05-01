@@ -1,4 +1,4 @@
-from lib.settings import Settings
+from settings import Settings
 
 from mutagen.oggvorbis import OggVorbis
 from pydub import AudioSegment

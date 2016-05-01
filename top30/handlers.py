@@ -1,4 +1,4 @@
-from lib.top30Creator import Top30Creator
+from top30Creator import Top30Creator
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -142,3 +142,12 @@ class MainWindowHandler:
         dialog.destroy()
         return filename
 
+class UserInterface:
+    def run():
+        builder = Gtk.Builder()
+        builder.add_from_file("mainWindow.glade")
+        main_window_handler = MainWindowHandler(builder)
+        builder.connect_signals(main_window_handler)
+        window = builder.get_object("mainWindow")
+        window.show_all()
+        Gtk.main()

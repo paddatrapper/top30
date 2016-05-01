@@ -4,3 +4,5 @@ pyenv
 voice/*
 songs/*
 __pycache__
+dist/*
+MANIFEST
