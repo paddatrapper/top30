@@ -40,7 +40,7 @@ class Top30Creator:
         voice = AudioSegment.from_ogg(voice_file)
         rundown = rundown.overlay(voice[:self.voice_begin_overlap], 
                 position=-self.voice_begin_overlap)
-        return rundown.append(voice[self.voice_begin_overlap:], crossfade=0)
+        return rundown.append(voice[self.voice_begin_overlap:], crossfade=0.5*1000)
 
     def add_song(self, song_file, rundown):
         start_time = self.get_start_time(song_file)
@@ -61,10 +61,9 @@ class Top30Creator:
             rundown.export(filename + "." + file_type, format=file_type)
 
     def get_start_time(self, filename):
-        song_meta = OggVorbis(filename).pprint().lower()
+        song_meta = OggVorbis(filename).tags
         tag = self.config.SONG_START_TAG.lower() 
-        time_code_start = song_meta.find(tag + "=") + len(tag) + 1
-        time_code = song_meta[time_code_start:]
+        time_code = song_meta[tag][0]
         song_length = float(time_code.split(':')[0]) * 60 + float(time_code.split(':')[1])
         song_length *= 1000
         return song_length
