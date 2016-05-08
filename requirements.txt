@@ -1,4 +1,4 @@
 mutagen
 pydub
 pyyaml
-gi
+pyqt
