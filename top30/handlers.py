@@ -63,9 +63,8 @@ class MainWindow(QtGui.QMainWindow):
 
     def on_delete_clip_clicked(self):
         item = self.get_selected_clip()
-        #if not item == None:
-        #    self.clip_list.remove(item)
-        print("on delete clip clicked")
+        if not item == None:
+            self.clip_model.removeRow(item.row())
 
     def on_create_clip_clicked(self):
         self.save_settings()
@@ -74,25 +73,23 @@ class MainWindow(QtGui.QMainWindow):
             return
         rundown_name = rundown_name[:-1]
 
-        #it = self.clip_list.get_iter_first()
-        #song = self.clip_list[it][1]
-        #i = 1
-        #while not it == None:
-        #    clip = self.clip_list[it][1]
-        #    if i == 1:
-        #        rundown = self.creator.get_start(clip)
-        #    elif i == len(self.clip_list) - 1:
-        #        rundown = self.creator.add_end(clip, rundown)
-        #    elif self.clip_list[it][0]:
-        #        rundown = self.creator.add_song(clip, rundown)
-        #    else:
-        #        rundown = self.creator.add_voice(clip, rundown)
-        #    it = self.clip_list.iter_next(it)
-        #    i += 1
-        #self.creator.export(rundown_name, "mp3", rundown)
+        item = self.clip_model.createIndex(-1, 1)
+        item = item.sibling(item.row() + 1, item.column()) # Makes it able to read the data
+        while item.isValid():
+            clip = item.data()
+            clip_type = item.sibling(item.row(), item.column() - 1).data()
+            if item.row() == 0:
+                rundown = self.creator.get_start(clip)
+            elif item.row() == self.clip_model.rowCount() - 1:
+                rundown = self.creator.add_end(clip, rundown)
+            elif clip_type == "Song":
+                rundown = self.creator.add_song(clip, rundown)
+            else:
+                rundown = self.creator.add_voice(clip, rundown)
+            item = item.sibling(item.row() + 1, item.column())
+        self.creator.export(rundown_name, "mp3", rundown)
         QtGui.QMessageBox.information(self, "Complete", 
                 "Clip " + rundown_name + " created.")
-        print("on create clip clicked")
 
     def get_selected_clip(self):
         row = self.clip_view.selectionModel().selectedRows()
@@ -108,7 +105,6 @@ class MainWindow(QtGui.QMainWindow):
             destination = destination.sibling(
                     destination.row(), destination.column() + 1)
             source = source.sibling(source.row(), source.column() + 1)
-
         self.clip_model.removeRow(source_row)
 
     def add_clip(self, filename):
