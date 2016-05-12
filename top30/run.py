@@ -6,7 +6,7 @@ import sys
 
 def main():
     if "--no-gui" in sys.argv:
-        creator = Top30Creator("config.yaml")
+        creator = Top30Creator()
         creator.create_rundown(30, 21, "")
         creator.create_rundown(20, 11, "")
         reator.create_rundown(10, 2, "")

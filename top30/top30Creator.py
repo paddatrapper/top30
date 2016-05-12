@@ -4,8 +4,8 @@ from mutagen.oggvorbis import OggVorbis
 from pydub import AudioSegment
 
 class Top30Creator:
-    def __init__(self, config_file):
-        self.config = Settings(config_file)
+    def __init__(self):
+        self.config = Settings()
         self.voice_begin_overlap = self.config.VOICE_START_OVERLAP
         self.voice_end_overlap = self.config.VOICE_END_OVERLAP
         self.song_length = self.config.SONG_LENGTH
