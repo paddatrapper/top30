@@ -4,11 +4,15 @@ import sys
 from PyQt4 import QtCore, QtGui, uic
 
 class MainWindow(QtGui.QMainWindow):
-    creator = Top30Creator("config.yaml")
+    creator = Top30Creator()
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        uic.loadUi("main_window.ui", self) 
+        if getattr(sys, 'Frozen', False):
+            ui_file = sys.__MEIPASS + "/main_window.ui"
+        else:
+            ui_file = __file__[:-len("handlers.py")] + "main_window.ui"
+        uic.loadUi(ui_file, self) 
         self.init_ui()
 
     def init_ui(self):
@@ -17,6 +21,12 @@ class MainWindow(QtGui.QMainWindow):
         self.btn_move_down.clicked.connect(self.on_move_down_clicked)
         self.btn_delete_clip.clicked.connect(self.on_delete_clip_clicked)
         self.btn_create.clicked.connect(self.on_create_clip_clicked)
+
+        self.act_new.triggered.connect(self.on_new_clicked)
+        self.act_exit.triggered.connect(QtGui.qApp.quit)
+        self.act_create_clip.triggered.connect(self.on_create_clip_clicked)
+        self.act_add_clip.triggered.connect(self.on_add_clip_clicked)
+        self.act_delete_clip.triggered.connect(self.on_delete_clip_clicked)
 
         self.load_settings()
         self.init_table()
@@ -35,6 +45,9 @@ class MainWindow(QtGui.QMainWindow):
         self.clip_view.resizeColumnsToContents()
         self.clip_view.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.clip_view.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+    
+    def on_new_clicked(self):
+        self.init_table()
 
     def on_add_clip_clicked(self):
         filenames  = QtGui.QFileDialog.getOpenFileNames(self, "Add clip", "/home/kyle/Documents/projects/top30/songs",
@@ -55,7 +68,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def on_move_down_clicked(self):
         item = self.get_selected_clip()
-        if not item == None and item.row() < self.clip_model.rowCount():
+        if not item == None and item.row() < self.clip_model.rowCount() - 1:
             self.clip_model.insertRow(item.row())
             item_row = item.sibling(item.row() + 2, 0)
             next_row = item.sibling(item.row(), 0)
