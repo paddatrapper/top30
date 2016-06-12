@@ -1,4 +1,5 @@
 from top30Creator import Top30Creator
+from clipList import ClipListModel
 
 import sys
 from PyQt4 import QtCore, QtGui, uic
@@ -36,16 +37,9 @@ class MainWindow(QtGui.QMainWindow):
         self.show()
 
     def init_table(self):
-        header = ["Type", "Filename", "Start"]
-        self.clip_model = QtGui.QStandardItemModel()
-        self.clip_model.setHorizontalHeaderLabels(header)
+        self.clip_model = ClipListModel()
         self.clip_view.setModel(self.clip_model)
 
-        self.clip_view.horizontalHeader().setStretchLastSection(True)
-        self.clip_view.resizeColumnsToContents()
-        self.clip_view.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.clip_view.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-    
     def on_new_clicked(self):
         self.init_table()
 
@@ -59,20 +53,14 @@ class MainWindow(QtGui.QMainWindow):
     def on_move_up_clicked(self):
         item = self.get_selected_clip()
         if not item == None and item.row() > 0:
-            self.clip_model.insertRow(item.row() - 1)
-            item_row = item.sibling(item.row() + 1, 0)
-            previous_row = item.sibling(item.row() - 1, 0)
-            previous = previous_row.row()
-            self.swap(item_row, previous_row)
-            self.clip_view.selectRow(previous)
+            self.clip_model.moveRows(QtCore.QModelIndex(), item.row(), 
+                    item.row(), QtCore.QModelIndex(), item.row() - 1)
 
     def on_move_down_clicked(self):
         item = self.get_selected_clip()
         if not item == None and item.row() < self.clip_model.rowCount() - 1:
-            self.clip_model.insertRow(item.row())
-            item_row = item.sibling(item.row() + 2, 0)
-            next_row = item.sibling(item.row(), 0)
-            self.swap(item_row, next_row)
+            self.clip_model.moveRows(QtCore.QModelIndex(), item.row() + 1, 
+                    item.row() + 1, QtCore.QModelIndex(), item.row())
 
     def on_delete_clip_clicked(self):
         item = self.get_selected_clip()
@@ -124,13 +112,9 @@ class MainWindow(QtGui.QMainWindow):
         try:
             time = self.creator.get_start_time(filename)/1000
             time_string = "%02d:%02.1f" % (time / 60, time % 60)
-            row = [QtGui.QStandardItem("Song"), 
-                    QtGui.QStandardItem(filename), 
-                    QtGui.QStandardItem(time_string)]
+            row = ["Song", filename, time_string]
         except:
-            row = [QtGui.QStandardItem("Voice"), 
-                    QtGui.QStandardItem(filename), 
-                    QtGui.QStandardItem(None)]
+            row = ["Voice", filename, None]
         self.clip_model.appendRow(row)
     
     def load_settings(self):
@@ -153,7 +137,7 @@ class MainWindow(QtGui.QMainWindow):
         filename  = QtGui.QFileDialog.getSaveFileName(self, "Add clip", "/home",
                 "Audio (*.mp3, *.ogg)")
         return filename
-
+    
 class UserInterface:
     def run():
         app = QtGui.QApplication(sys.argv)

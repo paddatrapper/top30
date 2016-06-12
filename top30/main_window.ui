@@ -49,7 +49,7 @@
        </layout>
       </item>
       <item row="0" column="0">
-       <widget class="QTableView" name="clip_view">
+       <widget class="ClipListView" name="clip_view">
         <property name="lineWidth">
          <number>1</number>
         </property>
@@ -222,6 +222,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ClipListView</class>
+   <extends>QTableView</extends>
+   <header location="global">clipList</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
