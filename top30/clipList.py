@@ -57,6 +57,7 @@ class ClipListModel(QtCore.QAbstractTableModel):
 
     def moveRows(self, source_parent, source_first, source_last, 
             destination_parent, destination):
+# Handle funny crashing bug
         self.beginMoveRows(source_parent, source_first, source_last, 
                 destination_parent, destination)
         items = self.data[source_first:source_last + 1]
@@ -92,6 +93,9 @@ class ClipListView(QtGui.QTableView):
             return
         source = self.source_index.row()
         destination = index.row()
+        if destination == source + 1:
+            destination = source
+            source += 1
         self.model().moveRows(QtCore.QModelIndex(), source, source, 
                 QtCore.QModelIndex(), destination)
         event.accept()

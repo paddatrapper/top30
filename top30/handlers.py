@@ -98,16 +98,6 @@ class MainWindow(QtGui.QMainWindow):
             return None
         return row[0]
 
-    def swap(self, source, destination):
-        source_row = source.row()
-        destination_row = destination.row()
-        while destination.isValid():
-            self.clip_model.setData(destination, source.data())
-            destination = destination.sibling(
-                    destination.row(), destination.column() + 1)
-            source = source.sibling(source.row(), source.column() + 1)
-        self.clip_model.removeRow(source_row)
-
     def add_clip(self, filename):
         try:
             time = self.creator.get_start_time(filename)/1000
