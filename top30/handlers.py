@@ -68,6 +68,11 @@ class MainWindow(QtGui.QMainWindow):
             self.clip_model.removeRow(item.row())
 
     def on_create_clip_clicked(self):
+        if self.clip_model.rowCount() == 0:
+            QtGui.QMessageBox.warning(self, "No Clips", 
+                    "Please add clips to use")
+            return
+
         self.save_settings()
         rundown_name = self.save_clip()
         if not rundown_name:
