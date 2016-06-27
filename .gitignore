@@ -1,8 +1,10 @@
 *.ogg
 *.mp3
-pyenv
-voice/*
-songs/*
+/pyenv
+/voice/
+/songs/
 __pycache__
-dist/*
+/dist/
 MANIFEST
+/build/
+/dist/
