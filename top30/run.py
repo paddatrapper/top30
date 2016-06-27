@@ -12,7 +12,8 @@ def main():
         reator.create_rundown(10, 2, "")
         reator.create_rundown(10, 1, "last-week")
     else:
-        UserInterface.run()
+        ui = UserInterface()
+        ui.run()
 
 if __name__ == "__main__":
     main()

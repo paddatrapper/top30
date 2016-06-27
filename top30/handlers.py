@@ -134,7 +134,7 @@ class MainWindow(QtGui.QMainWindow):
         return filename
     
 class UserInterface:
-    def run():
+    def run(self):
         app = QtGui.QApplication(sys.argv)
         ex = MainWindow()
         sys.exit(app.exec_())

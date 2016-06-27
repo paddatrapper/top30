@@ -1,6 +1,3 @@
-import yaml
-import os.path
-
 class Settings:
     def __init__(self):
         self.SONG_LENGTH = 10 * 1000
