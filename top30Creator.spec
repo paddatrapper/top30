@@ -23,10 +23,10 @@ exe = EXE(pyz,
           a.scripts,
           exclude_binaries=True,
           name='top30Creator',
-          debug=True,
+          debug=False,
           strip=False,
           upx=True,
-          console=True )
+          console=False )
 
 coll = COLLECT(exe,
                a.binaries,
