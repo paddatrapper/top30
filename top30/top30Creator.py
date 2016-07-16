@@ -55,15 +55,15 @@ class Top30Creator:
         return rundown.append(outro, crossfade=0)
 
     def export(self, filename, file_type, rundown):
-        if filename.endswith(file_type):
             rundown.export(filename, format=file_type)
-        else:
-            rundown.export(filename + "." + file_type, format=file_type)
 
     def get_start_time(self, filename):
         song_meta = OggVorbis(filename).tags
         tag = self.config.SONG_START_TAG.lower() 
-        time_code = song_meta[tag][0]
+        try:
+            time_code = song_meta[tag][0]
+        except KeyError:
+            time_code = song_meta['comment'][0]
         song_length = float(time_code.split(':')[0]) * 60 + float(time_code.split(':')[1])
         song_length *= 1000
         return song_length

@@ -1,11 +1,13 @@
-from PyQt4 import QtCore, QtGui, uic
+from PyQt5 import QtCore, QtWidgets, QtGui
 
 class ClipListModel(QtCore.QAbstractTableModel):
     def __init__(self):
         QtCore.QAbstractTableModel.__init__(self, parent=None)
-        self.setSupportedDragActions(QtCore.Qt.MoveAction)
         self.horizontal_header = ["Type", "Filename", "Start"]
         self.data = []
+
+    def supportedDragActions(self):
+        return QtCore.Qt.MoveAction
 
     def flags(self, index):
         if index.isValid():
@@ -27,7 +29,7 @@ class ClipListModel(QtCore.QAbstractTableModel):
     def headerData(self, index, orientation, role):
         if role != QtCore.Qt.DisplayRole:
             return None
-        if orientation == QtCore.Qt.Horizontal: 
+        if orientation == QtCore.Qt.Horizontal:
             return self.horizontal_header[index]
         else:
             return str(index + 1)
@@ -55,24 +57,24 @@ class ClipListModel(QtCore.QAbstractTableModel):
     def removeRow(self, row):
         self.removeRows(row, 1)
 
-    def moveRows(self, source_parent, source_first, source_last, 
+    def moveRows(self, source_parent, source_first, source_last,
             destination_parent, destination):
 # Handle funny crashing bug
-        self.beginMoveRows(source_parent, source_first, source_last, 
-                destination_parent, destination)
+        self.beginMoveRows(source_parent, source_first, source_last,
+                           destination_parent, destination)
         items = self.data[source_first:source_last + 1]
         self.data = self.data[:source_first] + self.data[source_last + 1:]
         for i in range(len(items)):
             self.data.insert(destination + i, items[i])
         self.endMoveRows()
 
-class ClipListView(QtGui.QTableView):
+class ClipListView(QtWidgets.QTableView):
     def __init__(self, parent=None):
-        QtGui.QTableView.__init__(self, parent=None)
+        QtWidgets.QTableView.__init__(self, parent=None)
         self.horizontalHeader().setStretchLastSection(True)
         self.resizeColumnsToContents()
-        self.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
 
         self.setDropIndicatorShown(True)
         self.setAcceptDrops(True)
@@ -96,8 +98,8 @@ class ClipListView(QtGui.QTableView):
         if destination == source + 1:
             destination = source
             source += 1
-        self.model().moveRows(QtCore.QModelIndex(), source, source, 
-                QtCore.QModelIndex(), destination)
+        self.model().moveRows(QtCore.QModelIndex(), source, source,
+                              QtCore.QModelIndex(), destination)
         event.accept()
 
     def mousePressEvent(self, event):
@@ -112,11 +114,12 @@ class ClipListView(QtGui.QTableView):
         drag = QtGui.QDrag(self)
 
         mimeData = QtCore.QMimeData()
-        mimeData.setData("application/top30clip", "")
+        mimeData.setData("application/top30clip", b"")
         drag.setMimeData(mimeData)
 
-        vis = self.source_index.sibling(self.source_index.row() + 1, self.source_index.column())
+        vis = self.source_index.sibling(self.source_index.row() + 1,
+                                        self.source_index.column())
         pixmap = QtGui.QPixmap()
-        pixmap = pixmap.grabWidget(self, self.visualRect(vis))
+        pixmap = self.grab(self.visualRect(vis))
         drag.setPixmap(pixmap)
-        result = drag.start(QtCore.Qt.MoveAction)
+        result = drag.exec()

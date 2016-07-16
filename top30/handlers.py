@@ -1,33 +1,32 @@
 from top30Creator import Top30Creator
 from clipList import ClipListModel
+from main_window import Ui_MainWindow
 
 import sys
-from PyQt4 import QtCore, QtGui, uic
+from PyQt5 import QtCore, QtWidgets
 
-class MainWindow(QtGui.QMainWindow):
+class MainWindow(QtWidgets.QMainWindow):
     creator = Top30Creator()
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        if getattr(sys, 'Frozen', False):
-            ui_file = sys.__MEIPASS + "/main_window.ui"
-        else:
-            ui_file = __file__[:-len("handlers.py")] + "main_window.ui"
-        uic.loadUi(ui_file, self) 
+        self.main_window = Ui_MainWindow()
+        self.main_window.setupUi(self)
         self.init_ui()
 
     def init_ui(self):
-        self.btn_add_clip.clicked.connect(self.on_add_clip_clicked)
-        self.btn_move_up.clicked.connect(self.on_move_up_clicked)
-        self.btn_move_down.clicked.connect(self.on_move_down_clicked)
-        self.btn_delete_clip.clicked.connect(self.on_delete_clip_clicked)
-        self.btn_create.clicked.connect(self.on_create_clip_clicked)
+        """Initialises the UI"""
+        self.main_window.btn_add_clip.clicked.connect(self.on_add_clip_clicked)
+        self.main_window.btn_move_up.clicked.connect(self.on_move_up_clicked)
+        self.main_window.btn_move_down.clicked.connect(self.on_move_down_clicked)
+        self.main_window.btn_delete_clip.clicked.connect(self.on_delete_clip_clicked)
+        self.main_window.btn_create.clicked.connect(self.on_create_clip_clicked)
 
-        self.act_new.triggered.connect(self.on_new_clicked)
-        self.act_exit.triggered.connect(QtGui.qApp.quit)
-        self.act_create_clip.triggered.connect(self.on_create_clip_clicked)
-        self.act_add_clip.triggered.connect(self.on_add_clip_clicked)
-        self.act_delete_clip.triggered.connect(self.on_delete_clip_clicked)
+        self.main_window.act_new.triggered.connect(self.on_new_clicked)
+        self.main_window.act_exit.triggered.connect(QtWidgets.qApp.quit)
+        self.main_window.act_create_clip.triggered.connect(self.on_create_clip_clicked)
+        self.main_window.act_add_clip.triggered.connect(self.on_add_clip_clicked)
+        self.main_window.act_delete_clip.triggered.connect(self.on_delete_clip_clicked)
 
         self.load_settings()
         self.init_table()
@@ -37,50 +36,56 @@ class MainWindow(QtGui.QMainWindow):
         self.show()
 
     def init_table(self):
+        """Initialises the table implementation"""
         self.clip_model = ClipListModel()
-        self.clip_view.setModel(self.clip_model)
+        self.main_window.clip_view.setModel(self.clip_model)
 
     def on_new_clicked(self):
+        """Event listener for the new menu item"""
         self.init_table()
 
     def on_add_clip_clicked(self):
-        filenames  = QtGui.QFileDialog.getOpenFileNames(self, "Add clip", "/home/kyle/Documents/projects/top30/songs",
-                "Audio(*.mp3, *.ogg);;All Files(*)")
-        for f in filenames:
-            self.add_clip(f)
-        self.clip_view.resizeColumnsToContents()
+        filenames, mime  = QtWidgets.QFileDialog.getOpenFileNames(self,
+                "Add clip", "/home/kyle/projects/top30/songs",
+                "Audio(*.mp3 *.ogg);;All Files(*)")
+        for filename in filenames:
+            self.add_clip(filename)
+        self.main_window.clip_view.resizeColumnsToContents()
 
     def on_move_up_clicked(self):
         item = self.get_selected_clip()
         if not item == None and item.row() > 0:
-            self.clip_model.moveRows(QtCore.QModelIndex(), item.row(), 
-                    item.row(), QtCore.QModelIndex(), item.row() - 1)
+            self.clip_model.moveRows(QtCore.QModelIndex(), item.row(),
+                                     item.row(), QtCore.QModelIndex(),
+                                     item.row() - 1)
 
     def on_move_down_clicked(self):
         item = self.get_selected_clip()
         if not item == None and item.row() < self.clip_model.rowCount() - 1:
-            self.clip_model.moveRows(QtCore.QModelIndex(), item.row() + 1, 
-                    item.row() + 1, QtCore.QModelIndex(), item.row())
+            self.clip_model.moveRows(QtCore.QModelIndex(), item.row() + 1,
+                                     item.row() + 1, QtCore.QModelIndex(),
+                                     item.row())
 
     def on_delete_clip_clicked(self):
+        """Event listener for the delete clip button"""
         item = self.get_selected_clip()
         if not item == None:
             self.clip_model.removeRow(item.row())
 
     def on_create_clip_clicked(self):
+        """Event listener for the Create Clip button"""
         if self.clip_model.rowCount() == 0:
-            QtGui.QMessageBox.warning(self, "No Clips", 
-                    "Please add clips to use")
+            QtWidgets.QMessageBox.warning(self, "No Clips",
+                                          "Please add clips to use")
             return
 
         self.save_settings()
-        rundown_name = self.save_clip()
+        rundown_name, file_type = self.save_clip()
         if not rundown_name:
             return
-        rundown_name = rundown_name[:-1]
 
         item = self.clip_model.createIndex(-1, 1)
-        item = item.sibling(item.row() + 1, item.column()) # Makes it able to read the data
+        item = item.sibling(item.row() + 1, item.column())
         while item.isValid():
             clip = item.data()
             clip_type = item.sibling(item.row(), item.column() - 1).data()
@@ -94,47 +99,51 @@ class MainWindow(QtGui.QMainWindow):
                 rundown = self.creator.add_voice(clip, rundown)
             item = item.sibling(item.row() + 1, item.column())
         self.creator.export(rundown_name, "mp3", rundown)
-        QtGui.QMessageBox.information(self, "Complete", 
-                "Clip " + rundown_name + " created.")
+        QtWidgets.QMessageBox.information(self, "Complete",
+                                          "Clip " + rundown_name + " created.")
 
     def get_selected_clip(self):
-        row = self.clip_view.selectionModel().selectedRows()
+        """Returns the selected clip in the list"""
+        row = self.main_window.clip_view.selectionModel().selectedRows()
         if len(row) == 0:
             return None
         return row[0]
 
     def add_clip(self, filename):
+        """Adds a clip to the list"""
         try:
             time = self.creator.get_start_time(filename)/1000
             time_string = "%02d:%02.1f" % (time / 60, time % 60)
             row = ["Song", filename, time_string]
-        except:
+        except KeyError:
             row = ["Voice", filename, None]
         self.clip_model.appendRow(row)
-    
+
     def load_settings(self):
         clip_length = str(self.creator.get_song_length()/1000)
         voice_begin_overlap = str(self.creator.get_voice_begin_overlap()/1000)
         voice_end_overlap = str(self.creator.get_voice_end_overlap()/1000)
-        self.txt_song_length.setText(clip_length)
-        self.txt_voice_start.setText(voice_begin_overlap)
-        self.txt_voice_end.setText(voice_end_overlap)
+        self.main_window.txt_song_length.setText(clip_length)
+        self.main_window.txt_voice_start.setText(voice_begin_overlap)
+        self.main_window.txt_voice_end.setText(voice_end_overlap)
 
     def save_settings(self):
-        clip_length = float(self.txt_song_length.text()) * 1000
+        clip_length = float(self.main_window.txt_song_length.text()) * 1000
         self.creator.set_song_length(clip_length)
-        voice_begin_overlap = float(self.txt_voice_start.text()) * 1000
+
+        voice_begin_overlap = float(self.main_window.txt_voice_start.text()) * 1000
         self.creator.set_voice_begin_overlap(voice_begin_overlap)
-        voice_end_overlap = float(self.txt_voice_end.text()) * 1000
+
+        voice_end_overlap = float(self.main_window.txt_voice_end.text()) * 1000
         self.creator.set_voice_end_overlap(voice_end_overlap)
 
     def save_clip(self):
-        filename  = QtGui.QFileDialog.getSaveFileName(self, "Add clip", "/home",
-                "Audio (*.mp3, *.ogg)")
+        filename = QtWidgets.QFileDialog.getSaveFileName(self, "Add clip", "/home/kyle",
+                                                         "Audio (*.mp3 *.ogg)")
         return filename
-    
+
 class UserInterface:
     def run(self):
-        app = QtGui.QApplication(sys.argv)
+        app = QtWidgets.QApplication(sys.argv)
         ex = MainWindow()
         sys.exit(app.exec_())
