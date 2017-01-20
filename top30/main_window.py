@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main_window.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.7
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -141,4 +141,4 @@ class Ui_MainWindow(object):
         self.act_help.setText(_translate("MainWindow", "Top 30 Creator Help"))
         self.act_about.setText(_translate("MainWindow", "About"))
 
-from clipList import ClipListView
+from top30.clip_list import ClipListView

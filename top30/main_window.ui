@@ -226,7 +226,7 @@
   <customwidget>
    <class>ClipListView</class>
    <extends>QTableView</extends>
-   <header location="global">clipList</header>
+   <header location="global">top30.clip_list</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -1,15 +1,32 @@
-from top30Creator import Top30Creator
-from clipList import ClipListModel
-from main_window import Ui_MainWindow
-
+###########################################################################
+# Top30 is Copyright (C) 2016-2017 Kyle Robbertze <krobbertze@gmail.com>
+#
+# Top30 is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 3 as
+# published by the Free Software Foundation.
+#
+# Top30 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Top30.  If not, see <http://www.gnu.org/licenses/>.
+###########################################################################
+"""
+Main UI handlers
+"""
 import sys
 from PyQt5 import QtCore, QtWidgets
 
-class MainWindow(QtWidgets.QMainWindow):
-    creator = Top30Creator()
+from top30.top_30_creator import Top30Creator
+from top30.clip_list import ClipListModel
+from top30.main_window import Ui_MainWindow
 
-    def __init__(self):
+class MainWindow(QtWidgets.QMainWindow):
+    def __init__(self, chart_file, last_week):
         super(MainWindow, self).__init__()
+        self.creator = Top30Creator(chart_file, last_week)
         self.main_window = Ui_MainWindow()
         self.main_window.setupUi(self)
         self.init_ui()

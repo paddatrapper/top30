@@ -1,8 +1,7 @@
 *.ogg
 *.mp3
 /pyenv
-/voice/
-/songs/
+/db/
 __pycache__
 /dist/
 MANIFEST
